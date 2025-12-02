@@ -1,10 +1,12 @@
-# KMS key for encrypting logs (CloudTrail/SSM session artifacts)
+
+#KMS key for encrypting logs (CloudTrail/SSM session artifacts)
+
 resource "aws_kms_key" "audit" {
   description             = "KMS key for ${var.project} audit logs"
   deletion_window_in_days = 30
   enable_key_rotation     = true
 
-  # REQUIRED: CloudTrail must be allowed to use the key
+  # Allowing CloudTrail to use this key for log encryption
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -17,6 +19,7 @@ resource "aws_kms_key" "audit" {
         Action   = "kms:*"
         Resource = "*"
       },
+      
       {
         Sid    = "Allow CloudTrail to encrypt logs"
         Effect = "Allow"
@@ -103,7 +106,7 @@ resource "aws_s3_bucket_policy" "audit_bucket_policy" {
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
-      # REQUIRED: ACL check
+      # ACLs check
       {
         Sid       = "AWSCloudTrailAclCheck"
         Effect    = "Allow"
@@ -112,7 +115,7 @@ resource "aws_s3_bucket_policy" "audit_bucket_policy" {
         Resource  = "arn:aws:s3:::${aws_s3_bucket.audit_bucket.id}"
       },
 
-      # REQUIRED: CloudTrail write with bucket-owner-full-control
+      #CloudTrail write with bucket-owner-full-control
       {
         Sid       = "AWSCloudTrailWrite"
         Effect    = "Allow"
@@ -126,7 +129,7 @@ resource "aws_s3_bucket_policy" "audit_bucket_policy" {
         }
       },
 
-      # REQUIRED: Allow CloudTrail to write using KMS SSE
+  #CloudTrail allowed to write using KMS SSE
       {
         Sid       = "AWSCloudTrailSSEKMSEncrypt"
         Effect    = "Allow"
@@ -154,7 +157,7 @@ resource "aws_cloudwatch_log_group" "ssm_sessions" {
   }
 }
 
-# CloudTrail for API-level auditing
+# CloudTrail API-level auditing
 resource "aws_cloudtrail" "trail" {
   name                          = "${var.project}-cloudtrail"
   s3_bucket_name                = aws_s3_bucket.audit_bucket.id
