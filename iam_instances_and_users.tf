@@ -1,4 +1,4 @@
-# EC2 instance role (so SSM can manage the instance)
+# EC2 instance role for SSM can manage the instance
 resource "aws_iam_role" "ec2_ssm_role" {
   name = "${var.project}-ec2-ssm-role"
 
@@ -11,7 +11,8 @@ resource "aws_iam_role" "ec2_ssm_role" {
     }]
   })
 
-  tags = { Name = "${var.project}-ec2-ssm-role" }
+  tags = { Name = "${var.project}-ec2-ssm-role" 
+  }
 }
 
 # Attach AWS managed policy that gives SSM agent the permissions it needs
@@ -26,14 +27,12 @@ resource "aws_iam_instance_profile" "ec2_profile" {
   role = aws_iam_role.ec2_ssm_role.name
 }
 
-# -------------------------
-# Human/admin role (example)
-# -------------------------
-# Create an admin role (you can change the Principal to your SSO/IdP roles)
+
+# Create an admin role 
 resource "aws_iam_role" "admin_mfa_role" {
   name = "${var.project}-admin-mfa-role"
 
-  # Example: root can assume — in real life, replace with your identity provider/principal
+  
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [{
@@ -43,7 +42,8 @@ resource "aws_iam_role" "admin_mfa_role" {
     }]
   })
 
-  tags = { Name = "${var.project}-admin-mfa-role" }
+  tags = { Name = "${var.project}-admin-mfa-role" 
+  }
 }
 
 # Require MFA to start/terminate sessions: Zero-Trust identity verification

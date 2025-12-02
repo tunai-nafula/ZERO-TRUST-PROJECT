@@ -1,11 +1,11 @@
 variable "aws_region" {
   type    = string
-  default = "us-east-1"    # change to your preferred region
+  default = "ap-south-1"   
 }
 
 variable "project" {
   type    = string
-  default = "zt-ssm-terraform"
+  default = "zero-trust-ssm-terraform"
 }
 
 variable "instance_count" {
@@ -15,15 +15,15 @@ variable "instance_count" {
 
 variable "instance_type" {
   type    = string
-  default = "t3.small"
+  default = "t3.micro"
 }
 
 variable "vpc_cidr" {
   type    = string
-  default = "10.10.0.0/16"
+  default = "10.0.0.0/16"
 }
 
 variable "private_subnet_cidrs" {
   type = list(string)
-  default = ["10.10.1.0/24"]
+  default = ["10.0.1.0/24"]
 }
