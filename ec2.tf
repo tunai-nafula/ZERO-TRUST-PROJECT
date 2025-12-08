@@ -13,6 +13,7 @@ resource "aws_instance" "private" {
               #!/bin/bash
               # basic example service — accessible only by SSM port forwarding or session shell
               yum update -y
+              yum install -y amazon-ssm-agent
               yum install -y httpd
               systemctl enable --now httpd
               echo "Hello from private instance $(hostname -f)" > /var/www/html/index.html
