@@ -27,4 +27,13 @@ resource "aws_instance" "private" {
     Name      = "${var.project}-private-${count.index}"
     zt-access = "true"   # tag can be used in IAM StartSession conditions
   }
+
+  #enable intance metadata
+metadata_options {
+  http_endpoint = "enabled"
+  http_tokens   = "required"
 }
+
+}
+
+
