@@ -56,9 +56,9 @@ resource "aws_kms_key" "audit" {
   }
 }
 
-# S3 bucket for audit/session logs
+# S3 bucket for audit logs
 resource "aws_s3_bucket" "audit_bucket" {
-  bucket = "${var.project}-audit-${data.aws_caller_identity.me.account_id}"
+  bucket = "${var.project}-audit-bucket"
 
   tags = {
     Name = "${var.project}-audit-bucket"
@@ -82,8 +82,9 @@ resource "aws_s3_bucket_versioning" "audit_bucket_versioning" {
     status = "Enabled"
   }
 
+#set to true to restrict instance deletion if needed
   lifecycle {
-    prevent_destroy = true
+    prevent_destroy = false
   }
 }
 
