@@ -1,4 +1,3 @@
-
 #KMS key for encrypting logs (CloudTrail/SSM session artifacts)
 
 resource "aws_kms_key" "audit" {
@@ -81,6 +80,7 @@ resource "aws_s3_bucket_versioning" "audit_bucket_versioning" {
   versioning_configuration {
     status = "Enabled"
   }
+
 
 #set to true to restrict instance deletion if needed
   lifecycle {
@@ -172,3 +172,5 @@ resource "aws_cloudtrail" "trail" {
     aws_s3_bucket_ownership_controls.audit_bucket_ownership
   ]
 }
+
+

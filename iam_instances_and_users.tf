@@ -78,3 +78,63 @@ resource "aws_iam_role_policy_attachment" "attach_mfa_policy" {
   role       = aws_iam_role.admin_mfa_role.name
   policy_arn = aws_iam_policy.ssm_start_mfa_policy.arn
 }
+
+
+
+# ---------------------------------------------------------------
+# IAM Policy: SSM Session & Port Forwarding
+# ---------------------------------------------------------------
+resource "aws_iam_policy" "ssm_port_forwarding" {
+  name        = "SSMPortForwardingPolicy"
+  description = "Allows SSM sessions and port forwarding for EC2 instances"
+  policy      = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = [
+          "ssm:StartSession",
+          "ssm:StartPortForwardingSession",
+          "ssm:DescribeInstanceInformation",
+          "ssm:TerminateSession" 
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+# ---------------------------------------------------------------
+# Attach to EC2 IAM Role (used by your Zero Trust EC2)
+# ---------------------------------------------------------------
+resource "aws_iam_role_policy_attachment" "ssm_port_forwarding_role_attach" {
+  role       = aws_iam_role.ec2_ssm_role.name # Replace with your actual EC2 role resource
+  policy_arn = aws_iam_policy.ssm_port_forwarding.arn
+}
+
+# NEW → Serial Console IAM policy
+# --------------------------------------------------------------------
+resource "aws_iam_policy" "serial_console_access" {
+  name = "${var.project}-serial-console-access"
+  description = "Allows starting EC2 Serial Console sessions"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "ec2-instance-connect:SendSerialConsoleSSHPublicKey",
+          "ec2:StartSerialConsoleSession"
+        ],
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+# Attach Serial Console permissions to the admin MFA role
+resource "aws_iam_role_policy_attachment" "attach_serial_console" {
+  role       = aws_iam_role.admin_mfa_role.name
+  policy_arn = aws_iam_policy.serial_console_access.arn
+}
