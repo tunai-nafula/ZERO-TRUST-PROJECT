@@ -37,3 +37,4 @@ resource "aws_iam_role_policy_attachment" "attach_logging_enforced" {
   role       = aws_iam_role.admin_mfa_role.name
   policy_arn = aws_iam_policy.ssm_logging_enforced.arn
 }
+
