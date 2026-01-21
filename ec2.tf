@@ -1,40 +1,20 @@
 resource "aws_instance" "private" {
   count = var.instance_count
 
-  ami                    = data.aws_ami.amazon_linux2.id
+  # Use pre-baked Zero Trust AMI (SSM + Apache already installed)
+  ami                    = var.zero_trust_ami_id
   instance_type          = var.instance_type
-  subnet_id              = element(aws_subnet.private.*.id, 0)
+  subnet_id = element(
+  aws_subnet.private[*].id,
+  count.index % length(aws_subnet.private)
+)
   vpc_security_group_ids = [aws_security_group.ssm_only.id]
 
   iam_instance_profile        = aws_iam_instance_profile.ec2_profile.name
   associate_public_ip_address = false
 
-  user_data = <<-EOF
-              #!/bin/bash
-              set -e
-
-              # Update packages
-              yum update -y
-
-              # Install Apache (httpd)
-              yum install -y httpd
-
-              # Enable and start Apache
-              systemctl enable httpd
-              systemctl start httpd
-
-              # Write index page
-              echo "Hello from private instance $(hostname -f)" > /var/www/html/index.html
-
-              # Install SSM Agent if missing
-              if ! command -v amazon-ssm-agent &> /dev/null; then
-                  yum install -y amazon-ssm-agent
-              fi
-
-              # Ensure SSM Agent is enabled and running
-              systemctl enable amazon-ssm-agent
-              systemctl start amazon-ssm-agent
-              EOF
+  # user_data REMOVED
+  # Configuration is now baked into the AMI for immutability and faster boot
 
   # The EC2 will not launch until the VPC endpoints are created
   depends_on = [
@@ -62,7 +42,7 @@ output "ami_debug" {
     owner = data.aws_ami.amazon_linux2.owner_id
   }
 } */
-  
+
 /* Output the private EC2 instance ID */
 output "private_ec2_id" {
   description = "ID of the first private EC2 instance"

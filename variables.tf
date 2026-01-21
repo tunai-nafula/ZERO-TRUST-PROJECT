@@ -15,7 +15,7 @@ variable "instance_count" {
 
 variable "instance_type" {
   type    = string
-  default = "t3.micro"
+  default = "t2.micro"
 }
 
 variable "vpc_cidr" {
@@ -26,4 +26,9 @@ variable "vpc_cidr" {
 variable "private_subnet_cidrs" {
   type = list(string)
   default = ["10.0.1.0/24"]
+}
+
+variable "zero_trust_ami_id" {
+  description = "Pre-baked AMI with Apache + SSM"
+  type        = string
 }
