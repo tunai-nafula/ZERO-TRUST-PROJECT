@@ -15,7 +15,7 @@ variable "instance_count" {
 
 variable "instance_type" {
   type    = string
-  default = "t2.micro"
+  default = "t3.micro"
 }
 
 variable "vpc_cidr" {
@@ -31,4 +31,16 @@ variable "private_subnet_cidrs" {
 variable "zero_trust_ami_id" {
   description = "Pre-baked AMI with Apache + SSM"
   type        = string
+}
+
+variable "allowed_azs" {
+  description = "AZs that support t3.micro in us-east-1"
+  type        = list(string)
+  default = [
+    "us-east-1a",
+    "us-east-1b",
+    "us-east-1c",
+    "us-east-1d",
+    "us-east-1f"
+  ]
 }

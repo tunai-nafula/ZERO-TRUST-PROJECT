@@ -16,15 +16,21 @@ resource "aws_vpc" "this" {
 # Private subnets (no public IPs, no internet access)
 # ---------------------------------------------------------------
 resource "aws_subnet" "private" {
-  count                   = length(var.private_subnet_cidrs)
-  vpc_id                  = aws_vpc.this.id
-  cidr_block              = var.private_subnet_cidrs[count.index]
+  count             = length(var.private_subnet_cidrs)
+  vpc_id            = aws_vpc.this.id
+  cidr_block        = var.private_subnet_cidrs[count.index]
+
+  availability_zone = var.allowed_azs[
+    count.index % length(var.allowed_azs)
+  ]
+
   map_public_ip_on_launch = false
 
   tags = {
     Name = "${var.project}-private-${count.index}"
   }
 }
+
 
 # ---------------------------------------------------------------
 # Security Group — EC2 (SSM-only, zero inbound)
