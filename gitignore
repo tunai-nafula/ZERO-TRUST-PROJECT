@@ -1,0 +1,12 @@
+# AWS credentials
+.aws/
+
+# Terraform state
+terraform.tfstate
+terraform.tfstate.backup
+*.tfstate.*
+.terraform.lock.hcl
+.terraform/
+
+# Terraform variables
+*.tfvars
