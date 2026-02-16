@@ -1,4 +1,6 @@
-# Zero-SSH EC2 Deployment using Terraform 
-(SSM Access, Encrypted Logging, CloudTrail)
+# ZERO TRUST EC2 INSTANCE ARCHITECTURE ON AWS USING TERRAFORM AND PACKER 
 
-This project sets up a fully secure, SSH-free AWS environment using Terraform. EC2 instances are accessed only through AWS Systems Manager, eliminating the need for open ports or key pairs. It also includes CloudTrail auditing, KMS encryption, and hardened S3 logging to provide a strong, enterprise-grade security baseline.
+This repository sets up a Zero Trust AWS environment in which EC2 instances run in private subnets. They do not have public IPs, SSH access, inbound security group rules, or key pairs. You connect to the EC2 instances using the AWS Systems Manager (SSM) Session Manager over VPC interface endpoints. This eliminates the need for bastion hosts, SSH keys, or exposed ports. Therefore, a Network Address Translation (NAT) Gateway is not required.
+The infrastructure is built using Terraform for reproducibility and Packer to create a hardened, reusable AMI with the SSM Agent preinstalled and configured. An Apache service is included to demonstrate secure access via SSM port forwarding.
+This setup follows the Zero Trust principles: never trust the network, verify every access request, and minimize the attack surface.
+
