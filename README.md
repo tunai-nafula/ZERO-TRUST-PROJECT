@@ -8,3 +8,4 @@ The infrastructure is built using Terraform for reproducibility and Packer to cr
 
 This setup follows the Zero Trust principles: never trust the network, verify every access request, and minimize the attack surface.
 
+Find the full documentation here: https://medium.com/@tunaimakokha/zero-trust-ec2-instance-architecture-on-aws-using-terraform-and-packer-c1920ddc2adc
